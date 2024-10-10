@@ -77,10 +77,10 @@
         <div class="box">
             <h3>КУРС ОБМЕНА</h3>
             <label for="gbp">Цена в фунтах (£):</label>
-            <input type="number" id="gbp" placeholder="Введите цену в фунтах" required inputmode="numeric">
+            <input type="text" id="gbp" placeholder="Введите цену в фунтах" required inputmode="decimal" pattern="^\d*\.?\d*$">
 
             <label for="usd">Цена в долларах ($):</label>
-            <input type="number" id="usd" placeholder="Введите цену в долларах" required inputmode="numeric">
+            <input type="text" id="usd" placeholder="Введите цену в долларах" required inputmode="decimal" pattern="^\d*\.?\d*$">
 
             <button onclick="calculateRate()">Узнать курс обмена</button>
 
@@ -91,10 +91,10 @@
             <h3>ФУНТ → РУБЛЬ</h3>
 
             <label for="convertGbp">Введите сумму в фунтах (£):</label>
-            <input type="number" id="convertGbp" placeholder="Введите сумму в фунтах" required inputmode="numeric">
+            <input type="text" id="convertGbp" placeholder="Введите сумму в фунтах" required inputmode="decimal" pattern="^\d*\.?\d*$">
 
             <label for="usdToRub">Введите курс $ к ₽:</label>
-            <input type="number" id="usdToRub" placeholder="Курс доллара к рублю" required inputmode="numeric">
+            <input type="text" id="usdToRub" placeholder="Курс доллара к рублю" required inputmode="decimal" pattern="^\d*\.?\d*$">
 
             <button onclick="convertToUsdAndRub()">Конвертировать</button>
 
@@ -105,7 +105,7 @@
             <h3>ДОЛЛАР → РУБЛЬ</h3>
 
             <label for="existingUsd">Имеющаяся сумма долларов ($):</label>
-            <input type="number" id="existingUsd" placeholder="Введите количество долларов" required inputmode="numeric">
+            <input type="text" id="existingUsd" placeholder="Введите количество долларов" required inputmode="decimal" pattern="^\d*\.?\d*$">
 
             <button onclick="convertRemainingUsdToRub()">Конвертировать</button>
 
