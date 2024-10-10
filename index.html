@@ -75,7 +75,7 @@
 
     <div class="container">
         <div class="box">
-            <h3>Курс обмена</h3>
+            <h3>КУРС ОБМЕНА</h3>
             <label for="gbp">Цена в фунтах (£):</label>
             <input type="number" id="gbp" placeholder="Введите цену в фунтах" required>
 
@@ -88,7 +88,7 @@
         </div>
 
         <div class="box">
-            <h3>Конвертация валюты</h3>
+            <h3>ФУНТ → РУБЛЬ</h3>
 
             <label for="convertGbp">Введите сумму в фунтах (£):</label>
             <input type="number" id="convertGbp" placeholder="Введите сумму в фунтах" required>
@@ -96,18 +96,21 @@
             <label for="usdToRub">Введите курс $ к ₽:</label>
             <input type="number" id="usdToRub" placeholder="Курс доллара к рублю" required>
 
-            <button onclick="convertToUsdAndRub()">Конвертировать в доллары и рубли</button>
+            <button onclick="convertToUsdAndRub()">Конвертировать</button>
 
             <div class="result" id="resultConversion"></div>
         </div>
 
         <div class="box">
-            <h3>Конвертация долларов в рубли</h3>
+            <h3>ДОЛЛАР → РУБЛЬ</h3>
 
             <label for="convertUsd">Введите сумму в долларах ($):</label>
             <input type="number" id="convertUsd" placeholder="Введите сумму в долларах" required>
 
-            <button onclick="convertUsdToRub()">Конвертировать в рубли</button>
+            <label for="existingUsd">Имеющаяся сумма долларов ($):</label>
+            <input type="number" id="existingUsd" placeholder="Введите количество долларов" required>
+
+            <button onclick="convertUsdToRub()">Конвертировать</button>
 
             <div class="result" id="resultUsdToRub"></div>
         </div>
@@ -148,14 +151,22 @@
 
         function convertUsdToRub() {
             const usdAmount = parseFloat(document.getElementById('convertUsd').value);
+            const existingUsdAmount = parseFloat(document.getElementById('existingUsd').value);
             const usdToRubRate = parseFloat(document.getElementById('usdToRub').value);
 
-            if (usdAmount > 0 && usdToRubRate > 0) {
-                const rubAmount = usdAmount * usdToRubRate;
-                document.getElementById('resultUsdToRub').innerHTML = `
-                    <div class="result-container">
-                        <span>${formatNumber(rubAmount.toFixed(2))} ₽</span>
-                    </div>`;
+            if (usdAmount > 0 && existingUsdAmount >= 0 && usdToRubRate > 0) {
+                const difference = usdAmount - existingUsdAmount; // Calculate the difference
+                const rubAmount = difference * usdToRubRate; // Convert the difference to rubles
+                if (difference > 0) {
+                    document.getElementById('resultUsdToRub').innerHTML = `
+                        <div class="result-container">
+                            <span>${formatNumber(difference.toFixed(2))} $</span>
+                            <span>=</span>
+                            <span>${formatNumber(rubAmount.toFixed(2))} ₽</span>
+                        </div>`;
+                } else {
+                    document.getElementById('resultUsdToRub').innerHTML = 'У вас уже достаточно долларов или превышен лимит.';
+                }
             } else {
                 document.getElementById('resultUsdToRub').innerHTML = 'Пожалуйста, введите сумму в долларах и курс доллара к рублю.';
             }
