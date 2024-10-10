@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Conversion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px; /* Reduced padding for smaller screens */
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 480px; /* Set a maximum width suitable for iPhone */
+            margin: 0 auto; /* Center the container */
+        }
+        .box {
+            background-color: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Full width of the container */
+            box-sizing: border-box; /* Include padding and border in width */
+        }
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em; /* Adjusted font size for better readability */
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 1em; /* Increased label font size */
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 12px; /* Increased padding for better touch targets */
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em; /* Increased input font size */
+        }
+        button {
+            padding: 12px 15px; /* Increased padding for better touch targets */
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1em; /* Increased button font size */
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        .result-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="box">
+            <h3>Курс обмена</h3>
+            <label for="gbp">Цена в фунтах (£):</label>
+            <input type="number" id="gbp" placeholder="Введите цену в фунтах" required>
+
+            <label for="usd">Цена в долларах ($):</label>
+            <input type="number" id="usd" placeholder="Введите цену в долларах" required>
+
+            <button onclick="calculateRate()">Узнать курс обмена</button>
+
+            <div class="result" id="resultRate"></div>
+        </div>
+
+        <div class="box">
+            <h3>Конвертация валюты</h3>
+
+            <label for="convertGbp">Введите сумму в фунтах (£):</label>
+            <input type="number" id="convertGbp" placeholder="Введите сумму в фунтах" required>
+
+            <label for="usdToRub">Введите курс $ к ₽:</label>
+            <input type="number" id="usdToRub" placeholder="Курс доллара к рублю" required>
+
+            <button onclick="convertToUsdAndRub()">Конвертировать в доллары и рубли</button>
+
+            <div class="result" id="resultConversion"></div>
+        </div>
+
+        <div class="box">
+            <h3>Конвертация долларов в рубли</h3>
+
+            <label for="convertUsd">Введите сумму в долларах ($):</label>
+            <input type="number" id="convertUsd" placeholder="Введите сумму в долларах" required>
+
+            <button onclick="convertUsdToRub()">Конвертировать в рубли</button>
+
+            <div class="result" id="resultUsdToRub"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentRate = 0;
+
+        function calculateRate() {
+            const gbp = parseFloat(document.getElementById('gbp').value);
+            const usd = parseFloat(document.getElementById('usd').value);
+
+            if (gbp > 0 && usd > 0) {
+                currentRate = usd / gbp;
+                document.getElementById('resultRate').innerHTML = `Курс обмена: ${formatNumber(currentRate.toFixed(2))} $ за £1`;
+            } else {
+                document.getElementById('resultRate').innerHTML = 'Пожалуйста, введите оба значения.';
+            }
+        }
+
+        function convertToUsdAndRub() {
+            const gbpAmount = parseFloat(document.getElementById('convertGbp').value);
+            const usdToRubRate = parseFloat(document.getElementById('usdToRub').value);
+
+            if (gbpAmount > 0 && currentRate > 0 && usdToRubRate > 0) {
+                const usdAmount = gbpAmount * currentRate;
+                const rubAmount = usdAmount * usdToRubRate;
+                document.getElementById('resultConversion').innerHTML = `
+                    <div class="result-container">
+                        <span>${formatNumber(usdAmount.toFixed(2))} $</span>
+                        <span>=</span>
+                        <span>${formatNumber(rubAmount.toFixed(2))} ₽</span>
+                    </div>`;
+            } else {
+                document.getElementById('resultConversion').innerHTML = 'Пожалуйста, введите сумму в фунтах и курс доллара к рублю.';
+            }
+        }
+
+        function convertUsdToRub() {
+            const usdAmount = parseFloat(document.getElementById('convertUsd').value);
+            const usdToRubRate = parseFloat(document.getElementById('usdToRub').value);
+
+            if (usdAmount > 0 && usdToRubRate > 0) {
+                const rubAmount = usdAmount * usdToRubRate;
+                document.getElementById('resultUsdToRub').innerHTML = `
+                    <div class="result-container">
+                        <span>${formatNumber(rubAmount.toFixed(2))} ₽</span>
+                    </div>`;
+            } else {
+                document.getElementById('resultUsdToRub').innerHTML = 'Пожалуйста, введите сумму в долларах и курс доллара к рублю.';
+            }
+        }
+
+        function formatNumber(num) {
+            const parts = num.toString().split('.');
+            const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            const decimalPart = parts.length > 1 ? ',' + parts[1] : '';
+            return integerPart + decimalPart;
+        }
+    </script>
+
+</body>
+</html>
