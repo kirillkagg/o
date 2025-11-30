@@ -3,12 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Currency Conversion" />
-    <meta property="og:description" content="Convert currencies easily." />
-    <meta property="og:image" content="https://kirillkagg.github.io/o/conv.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <link rel="icon" href="https://kirillkagg.github.io/o/conv.png" type="image/png">
     <title>Currency Conversion</title>
     <style>
         body {
@@ -34,7 +28,6 @@
             box-sizing: border-box;
         }
         h3 {
-            text-align: center;
             margin-bottom: 20px;
             font-size: 1.5em;
         }
@@ -42,7 +35,6 @@
             display: block;
             text-align: left;
             margin-bottom: 5px;
-            font-size: 1em;
         }
         input {
             width: calc(100% - 20px);
@@ -70,58 +62,55 @@
             margin-top: 10px;
             font-size: 1.2em;
         }
-        .result-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
+
+        <!-- BOX 1 -->
         <div class="box">
             <h3>КУРС ОБМЕНА</h3>
-            <label for="gbp">Цена в фунтах (£):</label>
-            <input type="text" id="gbp" placeholder="Введите цену в фунтах" required inputmode="decimal" pattern="^\d*\.?\d*$">
 
-            <label for="usd">Цена в долларах ($):</label>
-            <input type="text" id="usd" placeholder="Введите цену в долларах" required inputmode="decimal" pattern="^\d*\.?\d*$">
+            <label>Цена в фунтах (£):</label>
+            <input type="text" id="gbp" placeholder="Введите цену в фунтах" inputmode="decimal">
+
+            <label>Цена в долларах ($):</label>
+            <input type="text" id="usd" placeholder="Введите цену в долларах" inputmode="decimal">
 
             <button onclick="calculateRate()">Узнать курс обмена</button>
 
             <div class="result" id="resultRate"></div>
         </div>
 
+        <!-- BOX 2: USD → GBP -->
         <div class="box">
-            <h3>ФУНТ → РУБЛЬ</h3>
+            <h3>СКОЛЬКО ФУНТОВ</h3>
 
-            <label for="convertGbp">Введите сумму в фунтах (£):</label>
-            <input type="text" id="convertGbp" placeholder="Введите сумму в фунтах" required inputmode="decimal" pattern="^\d*\.?\d*$">
+            <label>Введите сумму в долларах ($):</label>
+            <input type="text" id="usdInput" placeholder="Введите сумму в долларах" inputmode="decimal">
 
-            <label for="usdToRub">Введите курс $ к ₽:</label>
-            <input type="text" id="usdToRub" placeholder="Курс доллара к рублю" required inputmode="decimal" pattern="^\d*\.?\d*$">
-
-            <button onclick="convertToUsdAndRub()">Конвертировать</button>
+            <button onclick="convertUsdToGbp()">Конвертировать</button>
 
             <div class="result" id="resultConversion"></div>
         </div>
 
+        <!-- BOX 3: GBP → USD -->
         <div class="box">
-            <h3>ДОЛЛАР → РУБЛЬ</h3>
+            <h3>СКОЛЬКО ДОЛЛАРОВ</h3>
 
-            <label for="existingUsd">Имеющаяся сумма долларов ($):</label>
-            <input type="text" id="existingUsd" placeholder="Введите количество долларов" required inputmode="decimal" pattern="^\d*\.?\d*$">
+            <label>Введите сумму в фунтах (£):</label>
+            <input type="text" id="gbpInput" placeholder="Введите сумму в фунтах" inputmode="decimal">
 
-            <button onclick="convertRemainingUsdToRub()">Конвертировать</button>
+            <button onclick="convertGbpToUsd()">Конвертировать</button>
 
-            <div class="result" id="resultUsdToRub"></div>
+            <div class="result" id="resultConversionGbp"></div>
         </div>
+
     </div>
 
     <script>
         let currentRate = 0;
-        let usdAmount = 0;
 
         function calculateRate() {
             const gbp = parseFloat(document.getElementById('gbp').value);
@@ -129,49 +118,38 @@
 
             if (gbp > 0 && usd > 0) {
                 currentRate = usd / gbp;
-                document.getElementById('resultRate').innerHTML = `${formatNumber(currentRate.toFixed(2))} $ за £1`;
+                document.getElementById('resultRate').innerHTML =
+                    `${formatNumber(currentRate.toFixed(2))} $ за £1`;
             } else {
-                document.getElementById('resultRate').innerHTML = 'Пожалуйста, введите оба значения.';
+                document.getElementById('resultRate').innerHTML = 'Введите оба значения.';
             }
         }
 
-        function convertToUsdAndRub() {
-            const gbpAmount = parseFloat(document.getElementById('convertGbp').value);
-            const usdToRubRate = parseFloat(document.getElementById('usdToRub').value);
+        function convertUsdToGbp() {
+            const usdAmount = parseFloat(document.getElementById('usdInput').value);
 
-            if (gbpAmount > 0 && currentRate > 0 && usdToRubRate > 0) {
-                usdAmount = gbpAmount * currentRate;
-                const rubAmount = usdAmount * usdToRubRate;
-                document.getElementById('resultConversion').innerHTML = `
-                    <div class="result-container">
-                        <span>${formatNumber(usdAmount.toFixed(2))} $</span>
-                        <span>=</span>
-                        <span>${formatNumber(rubAmount.toFixed(2))} ₽</span>
-                    </div>`;
+            if (usdAmount > 0 && currentRate > 0) {
+                const gbpAmount = usdAmount / currentRate;
+
+                document.getElementById('resultConversion').innerHTML =
+                    `${formatNumber(gbpAmount.toFixed(2))} £`;
             } else {
-                document.getElementById('resultConversion').innerHTML = 'Пожалуйста, введите сумму в фунтах и курс доллара к рублю.';
+                document.getElementById('resultConversion').innerHTML =
+                    'Введите сумму в долларах.';
             }
         }
 
-        function convertRemainingUsdToRub() {
-            const existingUsdAmount = parseFloat(document.getElementById('existingUsd').value);
-            const usdToRubRate = parseFloat(document.getElementById('usdToRub').value);
+        function convertGbpToUsd() {
+            const gbpAmount = parseFloat(document.getElementById('gbpInput').value);
 
-            if (usdToRubRate > 0) {
-                const difference = usdAmount - existingUsdAmount;
-                const rubAmount = difference * usdToRubRate;
-                if (difference > 0) {
-                    document.getElementById('resultUsdToRub').innerHTML = `
-                        <div class="result-container">
-                            <span>${formatNumber(difference.toFixed(2))} $</span>
-                            <span>=</span>
-                            <span>${formatNumber(rubAmount.toFixed(2))} ₽</span>
-                        </div>`;
-                } else {
-                    document.getElementById('resultUsdToRub').innerHTML = 'У вас уже достаточно долларов или превышен лимит.';
-                }
+            if (gbpAmount > 0 && currentRate > 0) {
+                const usdAmount = gbpAmount * currentRate;
+
+                document.getElementById('resultConversionGbp').innerHTML =
+                    `${formatNumber(usdAmount.toFixed(2))} $`;
             } else {
-                document.getElementById('resultUsdToRub').innerHTML = 'Пожалуйста, введите курс доллара к рублю.';
+                document.getElementById('resultConversionGbp').innerHTML =
+                    'Введите сумму в фунтах.';
             }
         }
 
